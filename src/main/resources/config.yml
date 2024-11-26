@@ -68,6 +68,17 @@ build_mode:
   use_actionbar_message: true
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# | STATIC TIME                              |
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+static_time:
+  # Should StaticTime be enabled?
+  enabled: false
+
+  # Which time should be set permanently in hub worlds?
+  time: 12000
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # | ANTI-WORLD DOWNLOADER                    | 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -396,3 +407,82 @@ player_hider:
     display_name: '&dPlayers &8&l> &cHidden &7(Right-Click)'
     lore:
       - '&7Click to show all players!'
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# | PVP MODE                                 |
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+pvp_mode:
+  enabled: true
+  # Slot the item should be given to?
+  slot: 7
+  # Time to enable/disable PVP Mode
+  time_to_toggle: 5
+  switcher:
+    material: DIAMOND_SWORD
+    amount: 1
+    pvp_on:
+      display_name: '&cPvP Mode &8&l> &aEnabled'
+      lore:
+        - '&7Hold for 5 seconds to &cdisable&7 PvP mode!'
+    pvp_off:
+      display_name: '&cPvP Mode &8&l> &cDisabled'
+      lore:
+        - '&7Hold for 5 seconds to &aenable&7 PvP mode!'
+  items:
+    sword:
+      material: DIAMOND_SWORD
+      amount: 1
+      enchantments:
+        - SHARPNESS: 1
+        - UNBREAKING: 3
+        - FIRE_ASPECT: 1
+    helmet:
+      material: DIAMOND_HELMET
+      amount: 1
+    chestplate:
+      material: DIAMOND_CHESTPLATE
+      amount: 1
+    leggings:
+      material: DIAMOND_LEGGINGS
+      amount: 1
+    boots:
+      material: DIAMOND_BOOTS
+      amount: 1
+    other:
+      - material: GOLDEN_APPLE
+        amount: 16
+      - material: BOW
+        amount: 1
+        enchantments:
+          - INFINITY: 1
+          - UNBREAKING: 3
+      - material: ARROW
+        amount: 1
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# | TELEPORTATION BOW                        |
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+teleportation_bow:
+  enabled: true
+  # Slot the item should be given to?
+  slot: 6
+  arrow_slot: 35
+  # Should we prevent them from moving/dropping the item?
+  disable_inventory_movement: true
+  # Entity to spawn when the bow is used
+  # Available entities: ARROW, ENDER_PEARL, SNOWBALL, EGG, LLAMA_SPIT, SHULKER_BULLET, SPECTRAL_ARROW, TRIDENT
+  entity: ARROW
+  # Cooldown in seconds between each use
+  cooldown: 60
+  max_range: 100
+  item:
+    display_name: '&dTeleportation Bow'
+    glow: true
+    lore:
+      - '&7Right-click to teleport to where the arrow lands!'
+      - '&7Cooldown: &d60s'
+      - '&7Range: &d100 blocks'
+  arrow:
+    display_name: '&dTeleportation Arrow'
+    lore:
+      - '&dWhat a beautiful arrow!'

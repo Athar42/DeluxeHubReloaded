@@ -10,6 +10,7 @@ import fun.lewisdev.deluxehub.cooldown.CooldownType;
 import fun.lewisdev.deluxehub.module.Module;
 import fun.lewisdev.deluxehub.module.ModuleType;
 import fun.lewisdev.deluxehub.module.modules.hologram.Hologram;
+import fun.lewisdev.deluxehub.module.modules.player.PvPMode;
 import fun.lewisdev.deluxehub.utility.universal.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,187 +32,186 @@ import java.util.List;
 
 public class WorldProtect extends Module {
 
-    private boolean hungerLoss;
-    private boolean fallDamage;
-    private boolean weatherChange;
-    private boolean deathMessage;
-    private boolean fireSpread;
-    private boolean leafDecay;
-    private boolean mobSpawning;
-    private boolean blockBurn;
-    private boolean voidDeath;
-    private boolean itemDrop;
-    private boolean itemPickup;
-    private boolean blockBreak;
-    private boolean blockPlace;
-    private boolean blockInteract;
-    private boolean playerPvP;
-    private boolean playerDrowning;
-    private boolean fireDamage;
+	private final List<Material> interactables = Arrays.asList(
+			XMaterial.ACACIA_DOOR.parseMaterial(),
+			XMaterial.ACACIA_FENCE_GATE.parseMaterial(),
+			XMaterial.ANVIL.parseMaterial(),
+			XMaterial.FLOWER_POT.parseMaterial(),
+			XMaterial.PAINTING.parseMaterial(),
+			XMaterial.BEACON.parseMaterial(),
+			XMaterial.RED_BED.parseMaterial(),
+			XMaterial.BIRCH_DOOR.parseMaterial(),
+			XMaterial.BIRCH_FENCE_GATE.parseMaterial(),
+			XMaterial.OAK_BOAT.parseMaterial(),
+			XMaterial.BREWING_STAND.parseMaterial(),
+			XMaterial.COMMAND_BLOCK.parseMaterial(),
+			XMaterial.CHEST.parseMaterial(),
+			XMaterial.DARK_OAK_DOOR.parseMaterial(),
+			XMaterial.SPRUCE_DOOR.parseMaterial(),
+			XMaterial.DARK_OAK_FENCE_GATE.parseMaterial(),
+			XMaterial.DAYLIGHT_DETECTOR.parseMaterial(),
+			XMaterial.DAYLIGHT_DETECTOR.parseMaterial(),
+			XMaterial.DISPENSER.parseMaterial(),
+			XMaterial.DROPPER.parseMaterial(),
+			XMaterial.ENCHANTING_TABLE.parseMaterial(),
+			XMaterial.ENDER_CHEST.parseMaterial(),
+			XMaterial.OAK_FENCE_GATE.parseMaterial(),
+			XMaterial.FURNACE.parseMaterial(),
+			XMaterial.HOPPER.parseMaterial(),
+			XMaterial.HOPPER_MINECART.parseMaterial(),
+			XMaterial.ITEM_FRAME.parseMaterial(),
+			XMaterial.JUNGLE_DOOR.parseMaterial(),
+			XMaterial.JUNGLE_FENCE_GATE.parseMaterial(),
+			XMaterial.LEVER.parseMaterial(),
+			XMaterial.MINECART.parseMaterial(),
+			XMaterial.NOTE_BLOCK.parseMaterial(),
+			XMaterial.MINECART.parseMaterial(),
+			XMaterial.COMPARATOR.parseMaterial(),
+			XMaterial.ACACIA_SIGN.parseMaterial(),
+			XMaterial.BIRCH_SIGN.parseMaterial(),
+			XMaterial.DARK_OAK_SIGN.parseMaterial(),
+			XMaterial.JUNGLE_SIGN.parseMaterial(),
+			XMaterial.OAK_SIGN.parseMaterial(),
+			XMaterial.CHEST_MINECART.parseMaterial(),
+			XMaterial.OAK_DOOR.parseMaterial(),
+			XMaterial.ACACIA_TRAPDOOR.parseMaterial(),
+			XMaterial.BAMBOO_TRAPDOOR.parseMaterial(),
+			XMaterial.BIRCH_TRAPDOOR.parseMaterial(),
+			XMaterial.CHERRY_TRAPDOOR.parseMaterial(),
+			XMaterial.COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.CRIMSON_TRAPDOOR.parseMaterial(),
+			XMaterial.DARK_OAK_TRAPDOOR.parseMaterial(),
+			XMaterial.EXPOSED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.IRON_TRAPDOOR.parseMaterial(),
+			XMaterial.JUNGLE_TRAPDOOR.parseMaterial(),
+			XMaterial.MANGROVE_TRAPDOOR.parseMaterial(),
+			XMaterial.OAK_TRAPDOOR.parseMaterial(),
+			XMaterial.OXIDIZED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.SPRUCE_TRAPDOOR.parseMaterial(),
+			XMaterial.WARPED_TRAPDOOR.parseMaterial(),
+			XMaterial.WAXED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.WAXED_EXPOSED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.WAXED_OXIDIZED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.WAXED_WEATHERED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.WEATHERED_COPPER_TRAPDOOR.parseMaterial(),
+			XMaterial.OAK_BUTTON.parseMaterial(),
+			XMaterial.OAK_DOOR.parseMaterial());
+	private boolean hungerLoss;
+	private boolean fallDamage;
+	private boolean weatherChange;
+	private boolean deathMessage;
+	private boolean fireSpread;
+	private boolean leafDecay;
+	private boolean mobSpawning;
+	private boolean blockBurn;
+	private boolean voidDeath;
+	private boolean itemDrop;
+	private boolean itemPickup;
+	private boolean blockBreak;
+	private boolean blockPlace;
+	private boolean blockInteract;
+	private boolean playerPvP;
+	private boolean playerDrowning;
+	private boolean fireDamage;
 
-    private final List<Material> interactables = Arrays.asList(
-            XMaterial.ACACIA_DOOR.parseMaterial(),
-            XMaterial.ACACIA_FENCE_GATE.parseMaterial(),
-            XMaterial.ANVIL.parseMaterial(),
-            XMaterial.FLOWER_POT.parseMaterial(),
-            XMaterial.PAINTING.parseMaterial(),
-            XMaterial.BEACON.parseMaterial(),
-            XMaterial.RED_BED.parseMaterial(),
-            XMaterial.BIRCH_DOOR.parseMaterial(),
-            XMaterial.BIRCH_FENCE_GATE.parseMaterial(),
-            XMaterial.OAK_BOAT.parseMaterial(),
-            XMaterial.BREWING_STAND.parseMaterial(),
-            XMaterial.COMMAND_BLOCK.parseMaterial(),
-            XMaterial.CHEST.parseMaterial(),
-            XMaterial.DARK_OAK_DOOR.parseMaterial(),
-            XMaterial.SPRUCE_DOOR.parseMaterial(),
-            XMaterial.DARK_OAK_FENCE_GATE.parseMaterial(),
-            XMaterial.DAYLIGHT_DETECTOR.parseMaterial(),
-            XMaterial.DAYLIGHT_DETECTOR.parseMaterial(),
-            XMaterial.DISPENSER.parseMaterial(),
-            XMaterial.DROPPER.parseMaterial(),
-            XMaterial.ENCHANTING_TABLE.parseMaterial(),
-            XMaterial.ENDER_CHEST.parseMaterial(),
-            XMaterial.OAK_FENCE_GATE.parseMaterial(),
-            XMaterial.FURNACE.parseMaterial(),
-            XMaterial.HOPPER.parseMaterial(),
-            XMaterial.HOPPER_MINECART.parseMaterial(),
-            XMaterial.ITEM_FRAME.parseMaterial(),
-            XMaterial.JUNGLE_DOOR.parseMaterial(),
-            XMaterial.JUNGLE_FENCE_GATE.parseMaterial(),
-            XMaterial.LEVER.parseMaterial(),
-            XMaterial.MINECART.parseMaterial(),
-            XMaterial.NOTE_BLOCK.parseMaterial(),
-            XMaterial.MINECART.parseMaterial(),
-            XMaterial.COMPARATOR.parseMaterial(),
-            XMaterial.ACACIA_SIGN.parseMaterial(),
-            XMaterial.BIRCH_SIGN.parseMaterial(),
-            XMaterial.DARK_OAK_SIGN.parseMaterial(),
-            XMaterial.JUNGLE_SIGN.parseMaterial(),
-            XMaterial.OAK_SIGN.parseMaterial(),
-            XMaterial.CHEST_MINECART.parseMaterial(),
-            XMaterial.OAK_DOOR.parseMaterial(),
-            XMaterial.ACACIA_TRAPDOOR.parseMaterial(),
-            XMaterial.BAMBOO_TRAPDOOR.parseMaterial(),
-            XMaterial.BIRCH_TRAPDOOR.parseMaterial(),
-            XMaterial.CHERRY_TRAPDOOR.parseMaterial(),
-            XMaterial.COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.CRIMSON_TRAPDOOR.parseMaterial(),
-            XMaterial.DARK_OAK_TRAPDOOR.parseMaterial(),
-            XMaterial.EXPOSED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.IRON_TRAPDOOR.parseMaterial(),
-            XMaterial.JUNGLE_TRAPDOOR.parseMaterial(),
-            XMaterial.MANGROVE_TRAPDOOR.parseMaterial(),
-            XMaterial.OAK_TRAPDOOR.parseMaterial(),
-            XMaterial.OXIDIZED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.SPRUCE_TRAPDOOR.parseMaterial(),
-            XMaterial.WARPED_TRAPDOOR.parseMaterial(),
-            XMaterial.WAXED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.WAXED_EXPOSED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.WAXED_OXIDIZED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.WAXED_WEATHERED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.WEATHERED_COPPER_TRAPDOOR.parseMaterial(),
-            XMaterial.OAK_BUTTON.parseMaterial(),
-            XMaterial.OAK_DOOR.parseMaterial());
+	public WorldProtect(DeluxeHubPlugin plugin) {
+		super(plugin, ModuleType.WORLD_PROTECT);
+	}
 
-    public WorldProtect(DeluxeHubPlugin plugin) {
-        super(plugin, ModuleType.WORLD_PROTECT);
-    }
+	@Override
+	public void onEnable() {
+		FileConfiguration config = getConfig(ConfigType.SETTINGS);
+		hungerLoss = config.getBoolean("world_settings.disable_hunger_loss");
+		fallDamage = config.getBoolean("world_settings.disable_fall_damage");
+		playerPvP = config.getBoolean("world_settings.disable_player_pvp");
+		voidDeath = config.getBoolean("world_settings.disable_void_death");
+		weatherChange = config.getBoolean("world_settings.disable_weather_change");
+		deathMessage = config.getBoolean("world_settings.disable_death_message");
+		mobSpawning = config.getBoolean("world_settings.disable_mob_spawning");
+		itemDrop = config.getBoolean("world_settings.disable_item_drop");
+		itemPickup = config.getBoolean("world_settings.disable_item_pickup");
+		blockBreak = config.getBoolean("world_settings.disable_block_break");
+		blockPlace = config.getBoolean("world_settings.disable_block_place");
+		blockInteract = config.getBoolean("world_settings.disable_block_interact");
+		blockBurn = config.getBoolean("world_settings.disable_block_burn");
+		fireSpread = config.getBoolean("world_settings.disable_block_fire_spread");
+		leafDecay = config.getBoolean("world_settings.disable_block_leaf_decay");
+		playerDrowning = config.getBoolean("world_settings.disable_drowning");
+		fireDamage = config.getBoolean("world_settings.disable_fire_damage");
+	}
 
-    @Override
-    public void onEnable() {
-        FileConfiguration config = getConfig(ConfigType.SETTINGS);
-        hungerLoss = config.getBoolean("world_settings.disable_hunger_loss");
-        fallDamage = config.getBoolean("world_settings.disable_fall_damage");
-        playerPvP = config.getBoolean("world_settings.disable_player_pvp");
-        voidDeath = config.getBoolean("world_settings.disable_void_death");
-        weatherChange = config.getBoolean("world_settings.disable_weather_change");
-        deathMessage = config.getBoolean("world_settings.disable_death_message");
-        mobSpawning = config.getBoolean("world_settings.disable_mob_spawning");
-        itemDrop = config.getBoolean("world_settings.disable_item_drop");
-        itemPickup = config.getBoolean("world_settings.disable_item_pickup");
-        blockBreak = config.getBoolean("world_settings.disable_block_break");
-        blockPlace = config.getBoolean("world_settings.disable_block_place");
-        blockInteract = config.getBoolean("world_settings.disable_block_interact");
-        blockBurn = config.getBoolean("world_settings.disable_block_burn");
-        fireSpread = config.getBoolean("world_settings.disable_block_fire_spread");
-        leafDecay = config.getBoolean("world_settings.disable_block_leaf_decay");
-        playerDrowning = config.getBoolean("world_settings.disable_drowning");
-        fireDamage = config.getBoolean("world_settings.disable_fire_damage");
-    }
+	@Override
+	public void onDisable() {
+	}
 
-    @Override
-    public void onDisable() {
-    }
+	@EventHandler
+	public void onArmorStandInteract(PlayerArmorStandManipulateEvent event) {
+		for (Hologram entry : getPlugin().getHologramManager().getHolograms()) {
+			for (ArmorStand stand : entry.getStands()) {
+				if (stand.equals(event.getRightClicked())) {
+					event.setCancelled(true);
+					return;
+				}
+			}
+		}
+	}
 
-    @EventHandler
-    public void onArmorStandInteract(PlayerArmorStandManipulateEvent event) {
-        for (Hologram entry : getPlugin().getHologramManager().getHolograms()) {
-            for (ArmorStand stand : entry.getStands()) {
-                if (stand.equals(event.getRightClicked())) {
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-        }
-    }
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockBreak(BlockBreakEvent event) {
+		if (!blockBreak || event.isCancelled()) return;
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (!blockBreak || event.isCancelled()) return;
-
-        Player player = event.getPlayer();
-        if (inDisabledWorld(player.getLocation())) return;
-        if (player.hasPermission(Permissions.EVENT_BLOCK_BREAK.getPermission())) return;
+		Player player = event.getPlayer();
+		if (inDisabledWorld(player.getLocation())) return;
+		if (player.hasPermission(Permissions.EVENT_BLOCK_BREAK.getPermission())) return;
 		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
 
-        event.setCancelled(true);
+		event.setCancelled(true);
 
-        if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_BREAK, 3)) {
-            Messages.EVENT_BLOCK_BREAK.send(player);
-        }
-    }
+		if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_BREAK, 3)) {
+			Messages.EVENT_BLOCK_BREAK.send(player);
+		}
+	}
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBlockPlace(BlockPlaceEvent event) {
-        if (!blockPlace || event.isCancelled()) return;
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockPlace(BlockPlaceEvent event) {
+		if (!blockPlace || event.isCancelled()) return;
 
-        Player player = event.getPlayer();
-        if (inDisabledWorld(player.getLocation())) return;
-        ItemStack item = event.getItemInHand();
-        if(item.getType() == Material.AIR) return;
+		Player player = event.getPlayer();
+		if (inDisabledWorld(player.getLocation())) return;
+		ItemStack item = event.getItemInHand();
+		if (item.getType() == Material.AIR) return;
 		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
 
-        if (new NBTItem(event.getItemInHand()).hasKey("hotbarItem")) {
-            event.setCancelled(true);
-            return;
-        }
+		if (new NBTItem(event.getItemInHand()).hasKey("hotbarItem")) {
+			event.setCancelled(true);
+			return;
+		}
 
-        if (player.hasPermission(Permissions.EVENT_BLOCK_PLACE.getPermission())) return;
+		if (player.hasPermission(Permissions.EVENT_BLOCK_PLACE.getPermission())) return;
 
-        event.setCancelled(true);
+		event.setCancelled(true);
 
-        if (tryCooldown(event.getPlayer().getUniqueId(), CooldownType.BLOCK_PLACE, 3)) {
-            Messages.EVENT_BLOCK_PLACE.send(player);
-        }
-    }
+		if (tryCooldown(event.getPlayer().getUniqueId(), CooldownType.BLOCK_PLACE, 3)) {
+			Messages.EVENT_BLOCK_PLACE.send(player);
+		}
+	}
 
-    @EventHandler
-    public void onBlockBurn(BlockBurnEvent event) {
-        if (!blockBurn) return;
-        if (inDisabledWorld(event.getBlock().getLocation())) return;
-        event.setCancelled(true);
-    }
+	@EventHandler
+	public void onBlockBurn(BlockBurnEvent event) {
+		if (!blockBurn) return;
+		if (inDisabledWorld(event.getBlock().getLocation())) return;
+		event.setCancelled(true);
+	}
 
-    // Prevent destroying of item frame/paintings
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onEntityDestroy(HangingBreakByEntityEvent event) {
-        if (!blockBreak || inDisabledWorld(event.getEntity().getLocation())) return;
-        Entity entity = event.getEntity();
-        Entity player = event.getRemover();
+	// Prevent destroying of item frame/paintings
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onEntityDestroy(HangingBreakByEntityEvent event) {
+		if (!blockBreak || inDisabledWorld(event.getEntity().getLocation())) return;
+		Entity entity = event.getEntity();
+		Entity player = event.getRemover();
 
-        if (entity instanceof Painting || entity instanceof ItemFrame && player instanceof Player) {
-			if(player != null){
+		if (entity instanceof Painting || entity instanceof ItemFrame && player instanceof Player) {
+			if (player != null) {
 				if (player.hasPermission(Permissions.EVENT_BLOCK_BREAK.getPermission())) return;
 				if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
 				event.setCancelled(true);
@@ -219,219 +219,255 @@ public class WorldProtect extends Module {
 					Messages.EVENT_BLOCK_BREAK.send(player);
 				}
 			}
-        }
-    }
+		}
+	}
 
-    // Prevent items being rotated in item frame
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onEntityInteract(PlayerInteractEntityEvent event) {
-        if (!blockInteract || inDisabledWorld(event.getRightClicked().getLocation())) return;
-        Entity entity = event.getRightClicked();
-        Entity player = event.getPlayer();
+	// Prevent items being rotated in item frame
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onEntityInteract(PlayerInteractEntityEvent event) {
+		if (!blockInteract || inDisabledWorld(event.getRightClicked().getLocation())) return;
+		Entity entity = event.getRightClicked();
+		Entity player = event.getPlayer();
 
-        if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
+		if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
 		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
 
-        if (entity instanceof ItemFrame) {
-            event.setCancelled(true);
-            if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
-                Messages.EVENT_BLOCK_INTERACT.send(player);
-            }
-        }
-    }
+		if (entity instanceof ItemFrame) {
+			event.setCancelled(true);
+			if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
+				Messages.EVENT_BLOCK_INTERACT.send(player);
+			}
+		}
+	}
 
-    // Prevent items being taken from item frames
-    @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!blockInteract || inDisabledWorld(event.getEntity().getLocation())) return;
-        Entity entity = event.getEntity();
-        Entity damager = event.getDamager();
+	// Prevent items being taken from item frames
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+		if (!blockInteract || inDisabledWorld(event.getEntity().getLocation())) return;
+		Entity entity = event.getEntity();
+		Entity damager = event.getDamager();
 
-        if (entity instanceof ItemFrame && damager instanceof Player) {
-            Player player = (Player) damager;
-            if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
+		if (entity instanceof ItemFrame && damager instanceof Player) {
+			Player player = (Player) damager;
+			if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
 			if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
-            event.setCancelled(true);
-            if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
-                Messages.EVENT_BLOCK_INTERACT.send(player);
-            }
-        }
-    }
+			event.setCancelled(true);
+			if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
+				Messages.EVENT_BLOCK_INTERACT.send(player);
+			}
+		}
+	}
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onBlockInteract(PlayerInteractEvent event) {
-        if (!blockInteract || inDisabledWorld(event.getPlayer().getLocation())) return;
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockInteract(PlayerInteractEvent event) {
+		if (!blockInteract || inDisabledWorld(event.getPlayer().getLocation())) return;
 
-        Player player = event.getPlayer();
-        if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
+		Player player = event.getPlayer();
+		if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
 		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
-        Block block = event.getClickedBlock();
-        if (block == null) return;
+		Block block = event.getClickedBlock();
+		if (block == null) return;
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
-            for (Material material : interactables) {
-                if (block.getType() == material || block.getType().toString().contains("POTTED")) {
+			for (Material material : interactables) {
+				if (block.getType() == material || block.getType().toString().contains("POTTED")) {
 
-                    event.setCancelled(true);
-                    if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
-                        Messages.EVENT_BLOCK_INTERACT.send(player);
-                    }
-                    return;
-                }
-            }
+					event.setCancelled(true);
+					if (tryCooldown(player.getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
+						Messages.EVENT_BLOCK_INTERACT.send(player);
+					}
+					return;
+				}
+			}
 
-        } else if (event.getAction() == Action.PHYSICAL && block.getType() == XMaterial.FARMLAND.parseMaterial())
-            event.setCancelled(true);
-    }
+		} else if (event.getAction() == Action.PHYSICAL && block.getType() == XMaterial.FARMLAND.parseMaterial())
+			event.setCancelled(true);
+	}
 
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        Player player = (Player) event.getEntity();
-        if (inDisabledWorld(player.getLocation())) return;
+	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event) {
+		if (!(event.getEntity() instanceof Player)) return;
+		Player player = (Player) event.getEntity();
+		if (inDisabledWorld(player.getLocation())) return;
 		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
+		PvPMode pvpMode = (PvPMode) getPlugin().getModuleManager().getModule(ModuleType.PVP_MODE);
+		EntityDamageEvent.DamageCause cause = event.getCause();
+		switch(cause){
+			case FALL:
+				if (fallDamage) event.setCancelled(true);
+				break;
+			case DROWNING:
+				if (playerDrowning) event.setCancelled(true);
+				break;
+			case FIRE:
+			case FIRE_TICK:
+				if(pvpMode.isPlayerInPvPMode(player.getUniqueId())) return;
+			case LAVA:
+				if (fireDamage) event.setCancelled(true);
+				break;
+			case VOID: {
+				if (voidDeath) {
+					player.setFallDistance(0.0F);
+					Location location = ((LobbySpawn) getPlugin().getModuleManager().getModule(ModuleType.LOBBY)).getLocation();
+					if (location == null) return;
+					Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> player.teleport(location), 3L);
+					event.setCancelled(true);
+				}
+				break;
+			}
+		}
+	}
 
-        EntityDamageEvent.DamageCause cause = event.getCause();
-        if (fallDamage && cause == EntityDamageEvent.DamageCause.FALL) event.setCancelled(true);
-        else if (playerDrowning && cause == EntityDamageEvent.DamageCause.DROWNING) event.setCancelled(true);
-        else if (fireDamage && (cause == EntityDamageEvent.DamageCause.FIRE || cause == EntityDamageEvent.DamageCause.FIRE_TICK || cause == EntityDamageEvent.DamageCause.LAVA)) event.setCancelled(true);
-        else if (voidDeath && cause == EntityDamageEvent.DamageCause.VOID) {
-            player.setFallDistance(0.0F);
-
-            Location location = ((LobbySpawn) getPlugin().getModuleManager().getModule(ModuleType.LOBBY)).getLocation();
-            if (location == null) return;
-
-            Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> player.teleport(location), 3L);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onFireSpread(BlockIgniteEvent event) {
-        if (!fireSpread) return;
-        if (inDisabledWorld(event.getBlock().getLocation())) return;
-        if (event.getCause() == BlockIgniteEvent.IgniteCause.SPREAD) event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onFoodChange(FoodLevelChangeEvent event) {
-        if (!hungerLoss) return;
-
-        if (!(event.getEntity() instanceof Player)) return;
-        Player player = (Player) event.getEntity();
-
-        if (inDisabledWorld(player.getLocation())) return;
-        event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerDropEvent(PlayerDropItemEvent event) {
-        if (!itemDrop) return;
-
-        Player player = event.getPlayer();
-
-        if (inDisabledWorld(player.getLocation())) return;
-        if (player.hasPermission(Permissions.EVENT_ITEM_DROP.getPermission())) return;
-		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
-
-        event.setCancelled(true);
-
-        if (tryCooldown(player.getUniqueId(), CooldownType.ITEM_DROP, 3)) {
-            Messages.EVENT_ITEM_DROP.send(player);
-        }
-    }
+	@EventHandler
+	public void onFireSpread(BlockIgniteEvent event) {
+		if (!fireSpread) return;
+		if (inDisabledWorld(event.getBlock().getLocation())) return;
+		if (event.getCause() == BlockIgniteEvent.IgniteCause.SPREAD) event.setCancelled(true);
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerPickupEvent(EntityPickupItemEvent event){
-		if(!itemDrop) return;
-		if(event.getEntity() instanceof  Player){
+	public void onFoodChange(FoodLevelChangeEvent event) {
+		if (!hungerLoss) return;
+
+		if (!(event.getEntity() instanceof Player)) return;
+		Player player = (Player) event.getEntity();
+
+		if (inDisabledWorld(player.getLocation())) return;
+		event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerDropEvent(PlayerDropItemEvent event) {
+		if (!itemDrop) return;
+
+		Player player = event.getPlayer();
+
+		if (inDisabledWorld(player.getLocation())) return;
+		if (player.hasPermission(Permissions.EVENT_ITEM_DROP.getPermission())) return;
+		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
+
+		event.setCancelled(true);
+
+		if (tryCooldown(player.getUniqueId(), CooldownType.ITEM_DROP, 3)) {
+			Messages.EVENT_ITEM_DROP.send(player);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerPickupEvent(EntityPickupItemEvent event) {
+		if (!itemDrop) return;
+		if (event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
 			if (inDisabledWorld(player.getLocation())) return;
 			if (player.hasPermission(Permissions.EVENT_ITEM_PICKUP.getPermission())) return;
 			if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
 			event.setCancelled(true);
-			if(tryCooldown(player.getUniqueId(), CooldownType.ITEM_PICKUP, 3)) {
+			if (tryCooldown(player.getUniqueId(), CooldownType.ITEM_PICKUP, 3)) {
 				Messages.EVENT_ITEM_PICKUP.send(player);
 			}
 		}
 	}
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onLeafDecay(LeavesDecayEvent event) {
-        if (!leafDecay) return;
-        if (inDisabledWorld(event.getBlock().getLocation())) return;
-        event.setCancelled(true);
-    }
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onLeafDecay(LeavesDecayEvent event) {
+		if (!leafDecay) return;
+		if (inDisabledWorld(event.getBlock().getLocation())) return;
+		event.setCancelled(true);
+	}
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onCreatureSpawn(CreatureSpawnEvent event) {
-        if (!mobSpawning) return;
-        if (inDisabledWorld(event.getEntity().getLocation())) return;
-        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) return;
-        event.setCancelled(true);
-    }
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
+		if (!mobSpawning) return;
+		if (inDisabledWorld(event.getEntity().getLocation())) return;
+		if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) return;
+		event.setCancelled(true);
+	}
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onWeatherChange(WeatherChangeEvent event) {
-        if (!weatherChange || inDisabledWorld(event.getWorld())) return;
-        event.setCancelled(event.toWeatherState());
-    }
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onWeatherChange(WeatherChangeEvent event) {
+		if (!weatherChange || inDisabledWorld(event.getWorld())) return;
+		event.setCancelled(event.toWeatherState());
+	}
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        if (!deathMessage || inDisabledWorld(event.getEntity().getLocation())) return;
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerDeath(PlayerDeathEvent event) {
+		if (!deathMessage || inDisabledWorld(event.getEntity().getLocation())) return;
 		if (BuildMode.getInstance().isPresent(event.getEntity().getUniqueId())) event.setKeepInventory(true);
 		event.getDrops().clear();
 		event.setKeepLevel(true);
-        event.setDeathMessage(null);
-    }
+		event.setDeathMessage(null);
+	}
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (!playerPvP) return;
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamage(EntityDamageByEntityEvent event) {
+		if (!playerPvP) return;
 
-        if (!(event.getEntity() instanceof Player)) return;
+		if (!(event.getEntity() instanceof Player)) return;
 
-        Player player = (Player) event.getEntity();
+		Player victim = (Player) event.getEntity();
 
-        if (inDisabledWorld(player.getLocation())) return;
+		if (inDisabledWorld(victim.getLocation())) return;
 
-        if (event.getDamager().hasPermission(Permissions.EVENT_PLAYER_PVP.getPermission())) return;
+		if(event.getDamager() instanceof Player) {
+			Player attacker = (Player) event.getDamager();
+			PvPMode pvpMode = (PvPMode) getPlugin().getModuleManager().getModule(ModuleType.PVP_MODE);
+			if(pvpMode.isPlayerInPvPMode(attacker.getUniqueId())){
+				if(!pvpMode.isPlayerInPvPMode(victim.getUniqueId())){
+					if (tryCooldown(attacker.getUniqueId(), CooldownType.VICTIM_NOT_IN_PVP_MODE, 3)) {
+						Messages.PVP_MODE_VICTIM_NOT_IN_PVP_MODE.send(attacker, "%victim%", victim.getDisplayName());
+					}
+					event.setCancelled(true);
+				}
+				return;
+			}
 
-        event.setCancelled(true);
-        if (tryCooldown(event.getDamager().getUniqueId(), CooldownType.PLAYER_PVP, 3)) {
-            Messages.EVENT_PLAYER_PVP.send(event.getDamager());
-        }
-    }
+			if (pvpMode.isPlayerInPvPMode(attacker.getUniqueId()) && pvpMode.isPlayerInPvPMode(victim.getUniqueId())) return;
+		}
 
-    // Prevent books being taken from lecterns
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onEntityInteract(PlayerTakeLecternBookEvent event) {
-        if (!blockInteract || inDisabledWorld(event.getLectern().getLocation())) return;
-        Entity player = event.getPlayer();
+		if(event.getDamager() instanceof Projectile) {
+			Projectile projectile = (Projectile) event.getDamager();
+			if(projectile.getShooter() instanceof Player) {
+				Player attacker = (Player) projectile.getShooter();
+				PvPMode pvpMode = (PvPMode) getPlugin().getModuleManager().getModule(ModuleType.PVP_MODE);
+				if (pvpMode.isPlayerInPvPMode(attacker.getUniqueId()) && pvpMode.isPlayerInPvPMode(victim.getUniqueId())) return;
+			}
+		}
 
-        if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
+		if (event.getDamager().hasPermission(Permissions.EVENT_PLAYER_PVP.getPermission())) return;
+
+		event.setCancelled(true);
+		if (tryCooldown(event.getDamager().getUniqueId(), CooldownType.PLAYER_PVP, 3)) {
+			Messages.EVENT_PLAYER_PVP.send(event.getDamager());
+		}
+	}
+
+	// Prevent books being taken from lecterns
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onEntityInteract(PlayerTakeLecternBookEvent event) {
+		if (!blockInteract || inDisabledWorld(event.getLectern().getLocation())) return;
+		Entity player = event.getPlayer();
+
+		if (player.hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
 		if (BuildMode.getInstance().isPresent(player.getUniqueId())) return;
 
-        event.setCancelled(true);
-    }
+		event.setCancelled(true);
+	}
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getPlayer().hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.getPlayer().hasPermission(Permissions.EVENT_BLOCK_INTERACT.getPermission())) return;
 		if (BuildMode.getInstance().isPresent(event.getPlayer().getUniqueId())) return;
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block clickedBlock = event.getClickedBlock();
-            if (clickedBlock != null && clickedBlock.getType() == Material.CHISELED_BOOKSHELF) {
-                event.setCancelled(true);
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Block clickedBlock = event.getClickedBlock();
+			if (clickedBlock != null && clickedBlock.getType() == Material.CHISELED_BOOKSHELF) {
+				event.setCancelled(true);
 
-
-                if (tryCooldown(event.getPlayer().getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
-                    Messages.EVENT_BLOCK_INTERACT.send(event.getPlayer());
-                }
-            }
-        }
-    }
+				if (tryCooldown(event.getPlayer().getUniqueId(), CooldownType.BLOCK_INTERACT, 3)) {
+					Messages.EVENT_BLOCK_INTERACT.send(event.getPlayer());
+				}
+			}
+		}
+	}
 
 }

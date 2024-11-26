@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fun.lewisdev</groupId>
-    <artifactId>DeluxeHubReloaded-1.21-1.21.1</artifactId>
-    <version>3.6.7</version>
+    <artifactId>DeluxeHubReloaded-1.21-1.21.3</artifactId>
+    <version>3.6.8</version>
     <packaging>jar</packaging>
 
     <name>DeluxeHubReloaded</name>
@@ -19,6 +19,9 @@
         </developer>
         <developer>
             <name>Strafbefehl</name>
+        </developer>
+        <developer>
+            <name>DeathBot159</name>
         </developer>
     </developers>
 
@@ -121,7 +124,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.21.1-R0.1-SNAPSHOT</version>
+            <version>1.21.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -167,7 +170,7 @@
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api</artifactId>
-            <version>2.13.2</version>
+            <version>2.14.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.headdatabase</groupId>
