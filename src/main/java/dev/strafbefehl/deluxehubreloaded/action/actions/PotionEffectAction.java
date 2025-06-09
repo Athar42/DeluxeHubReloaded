@@ -18,7 +18,8 @@ public class PotionEffectAction implements Action {
         String[] args = data.split(";");
         PotionEffectType type = PotionEffectType.getByName(args[0].toUpperCase());
         if (type != null) {
-            player.addPotionEffect(new PotionEffect(type, -1, Integer.parseInt(args[1]) - 1, false, false));
+            boolean showIcon = (args.length > 2 && args[2] != null) ? Boolean.parseBoolean(args[2]) : true;
+            player.addPotionEffect(new PotionEffect(type, -1, Integer.parseInt(args[1]) - 1, false, false, showIcon));
         }
     }
 }
