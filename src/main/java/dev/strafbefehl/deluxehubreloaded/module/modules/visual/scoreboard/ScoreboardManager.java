@@ -6,6 +6,7 @@ import dev.strafbefehl.deluxehubreloaded.module.Module;
 import dev.strafbefehl.deluxehubreloaded.module.ModuleType;
 import dev.strafbefehl.deluxehubreloaded.utility.TextUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -109,13 +110,17 @@ public class ScoreboardManager extends Module {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onWorldChange(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
-		if (event.getFrom().getWorld().getName().equals(event.getTo().getWorld().getName())) return;
+		World fromWorld = event.getFrom().getWorld();
+		World toWorld = event.getTo().getWorld();
 
-		if (inDisabledWorld(event.getTo().getWorld()) && players.containsKey(player.getUniqueId())) {
+		if (fromWorld.getName().equals(toWorld.getName())) return;
+
+		if (inDisabledWorld(toWorld) && players.containsKey(player.getUniqueId())) {
 			removeScoreboard(player);
-		} else if (!players.containsKey(player.getUniqueId())) {
+		} else if (!players.containsKey(player.getUniqueId()) && !inDisabledWorld(toWorld)) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> createScoreboard(player), worldDelay);
 		}
 	}
+
 
 }
