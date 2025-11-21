@@ -36,6 +36,7 @@ public class PvPMode extends Module {
     private final EnumMap<PvPItemType, List<ItemStack>> _items = new EnumMap<>(PvPItemType.class);
     private final List<UUID> _players = new ArrayList<>();
     private final Map<UUID, Integer> _tasks = new HashMap<>();
+    private boolean playerPvPStatus;
 
     public enum PvPSwitcherState {
         PVP_ON,
@@ -68,6 +69,7 @@ public class PvPMode extends Module {
     @Override
     public void onEnable() {
         ConfigurationSection config = getPlugin().getConfigManager().getFile(ConfigType.SETTINGS).getConfig().getConfigurationSection("pvp_mode");
+        playerPvPStatus = getPlugin().getConfigManager().getFile(ConfigType.SETTINGS).getConfig().getBoolean("world_settings.disable_player_pvp");
 		_slot = (short) config.getInt("slot");
         _time_to_toggle = (short) config.getInt("time_to_toggle");
         ConfigurationSection switcherSection = config.getConfigurationSection("switcher");
@@ -253,6 +255,7 @@ public class PvPMode extends Module {
 	public void onEntityAttack(EntityDamageByEntityEvent ev) {
 		if (!(ev.getDamager() instanceof Player)) return;
 		if (!(ev.getEntity() instanceof Player)) return;
+        if (!playerPvPStatus) return;
 		Player attacker = (Player) ev.getDamager();
 		Player target = (Player) ev.getEntity();
 		if (!_players.contains(attacker.getUniqueId()) || !_players.contains(target.getUniqueId())) {
@@ -269,6 +272,7 @@ public class PvPMode extends Module {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
+            if (!playerPvPStatus) return;
 			EntityDamageEvent.DamageCause cause = event.getCause();
 			Player damageTarget = (Player) event.getEntity();
 			if(!_players.contains(damageTarget.getUniqueId())) return;

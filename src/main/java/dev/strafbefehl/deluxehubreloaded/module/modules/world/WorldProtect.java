@@ -358,6 +358,7 @@ public class WorldProtect extends Module {
                 break;
             case FIRE:
             case FIRE_TICK:
+                if (!playerPvP) return;
                 if (config.getBoolean("pvp_mode.enabled")) {
                     if (pvpMode.isPlayerInPvPMode(player.getUniqueId())) return;
                 }
