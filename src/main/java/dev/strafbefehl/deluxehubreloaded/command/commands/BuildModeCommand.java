@@ -5,6 +5,7 @@ import cl.bgmp.minecraft.util.commands.annotations.Command;
 import cl.bgmp.minecraft.util.commands.exceptions.CommandException;
 import dev.strafbefehl.deluxehubreloaded.DeluxeHubPlugin;
 import dev.strafbefehl.deluxehubreloaded.Permissions;
+import dev.strafbefehl.deluxehubreloaded.command.commands.FlyCommand;
 import dev.strafbefehl.deluxehubreloaded.module.modules.world.BuildMode;
 import dev.strafbefehl.deluxehubreloaded.config.ConfigType;
 import dev.strafbefehl.deluxehubreloaded.config.Messages;
@@ -85,7 +86,9 @@ public class BuildModeCommand {
 
 	private void remove(BuildMode instance, Player target){
 		instance.removePlayer(target.getUniqueId());
-		target.setAllowFlight(true);
+		boolean shouldHaveFlight = PLUGIN.getModuleManager().isEnabled(ModuleType.DOUBLE_JUMP)
+				|| Boolean.TRUE.equals(FlyCommand.allowPlayerFly.get(target.getUniqueId()));
+		target.setAllowFlight(shouldHaveFlight);
 		Messages.BUILD_MODE_DISABLED.send(target);
 	}
 }
