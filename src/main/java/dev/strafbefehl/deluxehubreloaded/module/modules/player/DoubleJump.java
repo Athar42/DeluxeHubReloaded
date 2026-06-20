@@ -68,7 +68,12 @@ public class DoubleJump extends Module {
 		else if (inDisabledWorld(player.getLocation())) return;
 		else if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
 		else if (!event.isFlying()) return;
-		// All pre-checks passed, now handle double jump
+
+		PvPMode pvpMode = (PvPMode) getPlugin().getModuleManager().getModule(ModuleType.PVP_MODE);
+		if (pvpMode != null && pvpMode.isPlayerInPvPMode(player.getUniqueId())) {
+			event.setCancelled(true);
+			return;
+		}
 
 
 		// Check for cooldown
@@ -86,6 +91,7 @@ public class DoubleJump extends Module {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				if (pvpMode != null && pvpMode.isPlayerInPvPMode(player.getUniqueId())) return;
 				player.setAllowFlight(true);
 				event.setCancelled(true);
 			}

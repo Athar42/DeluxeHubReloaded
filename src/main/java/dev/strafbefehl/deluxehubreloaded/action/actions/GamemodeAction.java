@@ -20,7 +20,7 @@ public class GamemodeAction implements Action {
 			player.setGameMode(GameMode.valueOf(data.toUpperCase()));
 			if ((player.getGameMode() == GameMode.ADVENTURE || player.getGameMode() == GameMode.SURVIVAL)
 					&& plugin.getModuleManager().isEnabled(ModuleType.DOUBLE_JUMP)) {
-				player.getPlayer().setAllowFlight(true);
+				player.setAllowFlight(true);
 			}
 		} catch (IllegalArgumentException ex) {
 			Bukkit.getLogger().warning("[DeluxeHubReloaded Action] Invalid gamemode name: " + data.toUpperCase());

@@ -1,5 +1,6 @@
 package dev.strafbefehl.deluxehubreloaded.inventory;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -48,7 +49,8 @@ public class InventoryBuilder implements InventoryHolder {
 		if (size > 54) size = 54;
 		else if (size < 9) size = 9;
 
-		Inventory inventory = Bukkit.createInventory(this, size, title);
+		Inventory inventory = Bukkit.createInventory(this, size,
+				LegacyComponentSerializer.legacyAmpersand().deserialize(title));
 		for (Map.Entry<Integer, List<InventoryItem>> entry : icons.entrySet()) {
 			if (!entry.getValue().isEmpty()) {
 				inventory.setItem(entry.getKey(), entry.getValue().get(0).getItemStack());

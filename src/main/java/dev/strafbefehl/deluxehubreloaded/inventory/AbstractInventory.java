@@ -3,6 +3,7 @@ package dev.strafbefehl.deluxehubreloaded.inventory;
 import dev.strafbefehl.deluxehubreloaded.DeluxeHubPlugin;
 import dev.strafbefehl.deluxehubreloaded.utility.ItemStackBuilder;
 import dev.strafbefehl.deluxehubreloaded.utility.NamespacedKeys;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -71,7 +72,7 @@ public abstract class AbstractInventory implements Listener {
 					if (dataContainer.get(NamespacedKeys.Keys.PLAYER_HEAD.get(), PersistentDataType.BOOLEAN) != null) {
 						SkullMeta meta = (SkullMeta) item.getItemMeta();
 						if (meta != null) {
-							meta.setOwnerProfile(player.getPlayerProfile());
+							meta.setPlayerProfile(player.getPlayerProfile());
 							item.setItemMeta(meta);
 						}
 					}
@@ -79,8 +80,12 @@ public abstract class AbstractInventory implements Listener {
 			}
 
 			ItemStackBuilder newItem = new ItemStackBuilder(item);
-			if (item.getItemMeta().hasDisplayName()) newItem.withName(item.getItemMeta().getDisplayName(), player);
-			if (item.getItemMeta().hasLore()) newItem.withLore(item.getItemMeta().getLore(), player);
+			if (item.getItemMeta().hasDisplayName()) newItem.withName(
+					LegacyComponentSerializer.legacySection().serialize(item.getItemMeta().displayName()), player);
+			if (item.getItemMeta().hasLore()) newItem.withLore(
+					item.getItemMeta().lore().stream()
+							.map(c -> LegacyComponentSerializer.legacySection().serialize(c))
+							.toList(), player);
 			inventory.setItem(slot, newItem.build());
 		}
 		return inventory;

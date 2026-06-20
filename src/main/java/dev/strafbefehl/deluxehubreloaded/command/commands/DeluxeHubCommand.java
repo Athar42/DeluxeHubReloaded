@@ -20,7 +20,6 @@ import dev.strafbefehl.deluxehubreloaded.utility.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ public class DeluxeHubCommand {
 	)
 	public void main(final CommandContext args, final CommandSender sender) throws CommandException {
 
-		PluginDescriptionFile pdfFile = plugin.getDescription();
+		String pluginVersion = plugin.getPluginMeta().getVersion();
 
 		/*
 		Command: help
@@ -49,12 +48,12 @@ public class DeluxeHubCommand {
 		if (args.argsLength() == 0 || args.getString(0).equalsIgnoreCase("help")) {
 
 			if (!sender.hasPermission(Permissions.COMMAND_DELUXEHUB_HELP.getPermission())) {
-				sender.sendMessage(TextUtil.color("&8&l> &7Server is running &dDeluxeHubReloaded &ev" + pdfFile.getVersion() + " &7By &6ItsLewizzz, Athar42 and Strafbefehl"));
+				sender.sendMessage(TextUtil.color("&8&l> &7Server is running &dDeluxeHubReloaded &ev" + pluginVersion + " &7By &6ItsLewizzz, Athar42 and Strafbefehl"));
 				return;
 			}
 
 			sender.sendMessage("");
-			sender.sendMessage(TextUtil.color("&d&lDeluxeHubReloaded " + "&fv" + plugin.getDescription().getVersion()));
+			sender.sendMessage(TextUtil.color("&d&lDeluxeHubReloaded " + "&fv" + pluginVersion));
 			sender.sendMessage(TextUtil.color("&7Author: &fItsLewizzz, Athar42 and Strafbefehl"));
 			sender.sendMessage(TextUtil.color("&7Contributor: &fdeathbot159"));
 			sender.sendMessage("");

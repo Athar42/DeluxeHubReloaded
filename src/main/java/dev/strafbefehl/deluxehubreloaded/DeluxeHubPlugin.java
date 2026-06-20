@@ -43,7 +43,7 @@ public class DeluxeHubPlugin extends JavaPlugin {
 	public void onEnable() {
 		long start = System.currentTimeMillis();
 		getLogger().log(Level.INFO, "Based on original code from DeluxeHub");
-		getLogger().log(Level.INFO, "Modified, and maintained by Strafbefehl, 2025");
+		getLogger().log(Level.INFO, "Modified, and maintained by Athar42 & Strafbefehl, 2025-2026");
 
 		// Check if running on Paper
 		try {
@@ -85,6 +85,7 @@ public class DeluxeHubPlugin extends JavaPlugin {
 		// Load config files
 		configManager = new ConfigManager();
 		configManager.loadFiles(this);
+		currentVersion = Version.parse(getPluginMeta().getVersion());
 
 		// If there were any configuration errors we should not continue
 		if (!getServer().getPluginManager().isPluginEnabled(this)) return;
@@ -119,12 +120,6 @@ public class DeluxeHubPlugin extends JavaPlugin {
 
 		getLogger().log(Level.INFO, "");
 		getLogger().log(Level.INFO, "Successfully loaded in " + (System.currentTimeMillis() - start) + "ms");
-
-		currentVersion = Version.parse(getPluginMeta().getVersion());
-
-		// Initialize and load configurations
-		configManager = new ConfigManager();
-		configManager.loadFiles(this);
 
 	}
 

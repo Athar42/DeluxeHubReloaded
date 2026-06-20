@@ -11,12 +11,14 @@ import dev.strafbefehl.deluxehubreloaded.config.ConfigType;
 import dev.strafbefehl.deluxehubreloaded.config.Messages;
 import dev.strafbefehl.deluxehubreloaded.module.ModuleType;
 import dev.strafbefehl.deluxehubreloaded.module.modules.player.PvPMode;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@SuppressWarnings("unused") // FlyCommand IS used at line 91 via FlyCommand.allowPlayerFly — IDE false positive
 public class BuildModeCommand {
 	private final DeluxeHubPlugin plugin;
 	private static final DeluxeHubPlugin PLUGIN = JavaPlugin.getPlugin(DeluxeHubPlugin.class);
@@ -47,7 +49,7 @@ public class BuildModeCommand {
 			if (config.getBoolean("pvp_mode.enabled") && !config.getBoolean("multiple_worlds")) {
 				PvPMode pvpMode = (PvPMode) plugin.getModuleManager().getModule(ModuleType.PVP_MODE);
 				if (pvpMode.isPlayerInPvPMode(target.getUniqueId())) {
-					Messages.BUILD_MODE_COMMAND_TARGET_IN_PVP_MODE.send(sender, "%target%", target.getDisplayName());
+					Messages.BUILD_MODE_COMMAND_TARGET_IN_PVP_MODE.send(sender, "%target%", LegacyComponentSerializer.legacySection().serialize(target.displayName()));
 					return;
 				}
 			}
@@ -81,7 +83,7 @@ public class BuildModeCommand {
 		}
 		bm.addPlayer(target);
 		Messages.BUILD_MODE_ENABLED.send(target);
-		if(args.argsLength() >= 1) Messages.BUILD_MODE_COMMAND_ENABLED_FOR_TARGET.send(sender, "%target%", target.getDisplayName());
+		if(args.argsLength() >= 1) Messages.BUILD_MODE_COMMAND_ENABLED_FOR_TARGET.send(sender, "%target%", LegacyComponentSerializer.legacySection().serialize(target.displayName()));
 	}
 
 	private void remove(BuildMode instance, Player target){

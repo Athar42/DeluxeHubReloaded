@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class WorldProtect extends Module {
-    FileConfiguration config = getConfig(ConfigType.SETTINGS);
+    private FileConfiguration config;
     private final List<Material> interactables = Arrays.asList(
             Material.ANVIL,
             Material.ARMOR_STAND,
@@ -110,7 +110,7 @@ public class WorldProtect extends Module {
 
     @Override
     public void onEnable() {
-        FileConfiguration config = getConfig(ConfigType.SETTINGS);
+        config = getConfig(ConfigType.SETTINGS);
         hungerLoss = config.getBoolean("world_settings.disable_hunger_loss");
         fallDamage = config.getBoolean("world_settings.disable_fall_damage");
         playerPvP = config.getBoolean("world_settings.disable_player_pvp");
@@ -331,7 +331,7 @@ public class WorldProtect extends Module {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerPickupEvent(EntityPickupItemEvent event) {
-        if (!itemDrop) return;
+        if (!itemPickup) return;
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (inDisabledWorld(player.getLocation())) return;
@@ -373,7 +373,7 @@ public class WorldProtect extends Module {
         if (BuildMode.getInstance().isPresent(event.getEntity().getUniqueId())) event.setKeepInventory(true);
         event.getDrops().clear();
         event.setKeepLevel(true);
-        event.setDeathMessage(null);
+        event.deathMessage(null);
     }
 
     @EventHandler
@@ -410,6 +410,8 @@ public class WorldProtect extends Module {
                 }
                 break;
             }
+            default:
+                break;
         }
     }
 

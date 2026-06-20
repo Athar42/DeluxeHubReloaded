@@ -138,7 +138,7 @@ public abstract class HotbarItem implements Listener {
 		if (event.getHand() != EquipmentSlot.HAND) return;
 
 		Player player = event.getPlayer();
-		ItemStack item = player.getItemInHand();
+		ItemStack item = player.getInventory().getItemInMainHand();
 		if (item.getType() == Material.AIR) return;
 
 		ItemMeta meta = item.getItemMeta();

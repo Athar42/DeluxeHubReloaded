@@ -5,11 +5,12 @@ import dev.strafbefehl.deluxehubreloaded.config.ConfigType;
 import dev.strafbefehl.deluxehubreloaded.config.Messages;
 import dev.strafbefehl.deluxehubreloaded.module.Module;
 import dev.strafbefehl.deluxehubreloaded.module.ModuleType;
+import dev.strafbefehl.deluxehubreloaded.command.commands.FlyCommand;
 import dev.strafbefehl.deluxehubreloaded.module.modules.hotbar.HotbarManager;
 import dev.strafbefehl.deluxehubreloaded.utility.ItemStackBuilder;
 import dev.strafbefehl.deluxehubreloaded.utility.NamespacedKeys;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -92,7 +93,8 @@ public class PvPMode extends Module {
 			ConfigurationSection section = itemsSection.getConfigurationSection(type.name().toLowerCase());
 			if(section == null){
 				if(type == PvPItemType.OTHER){
-					List<LinkedHashMap<String, ?>> list = (List<LinkedHashMap<String, ?>>) itemsSection.getList("other");
+					@SuppressWarnings("unchecked")
+				List<LinkedHashMap<String, ?>> list = (List<LinkedHashMap<String, ?>>) itemsSection.getList("other");
 					if (list != null) {
 						_items.put(type, new ArrayList<>());
 						for (LinkedHashMap<String, ?> map : list) {
@@ -137,7 +139,7 @@ public class PvPMode extends Module {
 			int taskId = _tasks.get(player.getUniqueId());
             scheduler.cancelTask(taskId);
             _tasks.remove(pUUID);
-			player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder().append(" ").create());
+			player.sendActionBar(Component.empty());
             return;
         }
 		PlayerInventory inv = player.getInventory();
@@ -154,8 +156,8 @@ public class PvPMode extends Module {
 				@Override
 				public void run() {
 					if(timeLeft > 0){
-						player.spigot().
-								sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder().appendLegacy(Messages.PVP_MODE_SWITCH_ON_TIME.toString().replaceAll("&", "§").replace("%time%", ""+timeLeft)).create());
+						player.sendActionBar(LegacyComponentSerializer.legacySection().deserialize(
+								Messages.PVP_MODE_SWITCH_ON_TIME.toString().replaceAll("&", "§").replace("%time%", ""+timeLeft)));
 						timeLeft--;
 					}else {
 						if (player.isOnline()) {
@@ -200,7 +202,10 @@ public class PvPMode extends Module {
 							inv.setItem(8, _switcher.get(PvPSwitcherState.PVP_ON));
 							getPlugin().getServer().getScheduler().cancelTask(_tasks.get(pUUID));
 							_tasks.remove(pUUID);
-							player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder().appendLegacy(Messages.PVP_MODE_LETS_FIGHT.toString().replaceAll("&", "§")).create());
+							player.setAllowFlight(false);
+							player.setFlying(false);
+							player.sendActionBar(LegacyComponentSerializer.legacySection().deserialize(
+									Messages.PVP_MODE_LETS_FIGHT.toString().replaceAll("&", "§")));
 						}
 					}
 				}
@@ -212,8 +217,8 @@ public class PvPMode extends Module {
 				@Override
 				public void run() {
 					if (timeLeft > 0) {
-						player.spigot().
-								sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder().appendLegacy(Messages.PVP_MODE_SWITCH_OFF_TIME.toString().replaceAll("&", "§").replace("%time%", ""+timeLeft)).create());
+						player.sendActionBar(LegacyComponentSerializer.legacySection().deserialize(
+								Messages.PVP_MODE_SWITCH_OFF_TIME.toString().replaceAll("&", "§").replace("%time%", ""+timeLeft)));
 						timeLeft--;
 					} else {
 						if (player.isOnline()) {
@@ -229,7 +234,10 @@ public class PvPMode extends Module {
 							hotbarManager.changeToJoinSlot(player);
 							getPlugin().getServer().getScheduler().cancelTask(_tasks.get(pUUID));
 							_tasks.remove(pUUID);
-							player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder().append(" ").create());
+							boolean shouldHaveFlight = getPlugin().getModuleManager().isEnabled(ModuleType.DOUBLE_JUMP)
+									|| Boolean.TRUE.equals(FlyCommand.allowPlayerFly.get(pUUID));
+							player.setAllowFlight(shouldHaveFlight);
+							player.sendActionBar(Component.empty());
 						}
 					}
 				}
@@ -241,7 +249,6 @@ public class PvPMode extends Module {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onItemMove(InventoryClickEvent ev) {
 		if (!(ev.getWhoClicked() instanceof Player)) return;
-		Player player = (Player) ev.getWhoClicked();
 		ItemStack movedItem = ev.getCurrentItem();
 		if(movedItem == null) return;
 		if(!movedItem.hasItemMeta()) return;

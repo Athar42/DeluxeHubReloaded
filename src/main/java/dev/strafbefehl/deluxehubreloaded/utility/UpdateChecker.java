@@ -38,13 +38,25 @@ public class UpdateChecker {
 	}
 
 	private int compareVersions(String v1, String v2) {
-		String[] parts1 = v1.replaceFirst("^v", "").split("\\.");
-		String[] parts2 = v2.replaceFirst("^v", "").split("\\.");
+		String s1 = v1.replaceFirst("^v", "");
+		String s2 = v2.replaceFirst("^v", "");
+
+		String[] split1 = s1.split("-", 2);
+		String[] split2 = s2.split("-", 2);
+		boolean preRelease1 = split1.length > 1;
+		boolean preRelease2 = split2.length > 1;
+
+		String[] parts1 = split1[0].split("\\.");
+		String[] parts2 = split2[0].split("\\.");
 		for (int i = 0; i < Math.max(parts1.length, parts2.length); i++) {
 			int p1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
 			int p2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
 			if (p1 != p2) return Integer.compare(p1, p2);
 		}
+
+		// Parties numériques égales : pre-release < release (semver)
+		if (preRelease1 && !preRelease2) return -1;
+		if (!preRelease1 && preRelease2) return 1;
 		return 0;
 	}
 
